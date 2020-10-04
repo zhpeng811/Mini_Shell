@@ -62,12 +62,16 @@ void execute_command(char** argv, string input, int arg_count, Process_Table& ta
 }
 
 
-void print_resource() {
+void print_resource(string cmd) {
     struct rusage usage;
     // RUSAGE_CHILDREN will obtain the usage time for all finished child processes and store it into the usage struct
     getrusage(RUSAGE_CHILDREN, &usage);
 
-    cout << "Resources used:\n";
+    if (cmd.compare("exit") == 0) {
+        cout << "Resources used:\n";
+    } else {
+        cout << "Completed Processes:\n";
+    }
     cout << "User time =        " << usage.ru_utime.tv_sec << " seconds \n";
     cout << "System time =      " << usage.ru_stime.tv_sec << " seconds \n";
 }
@@ -158,7 +162,7 @@ void shell379_exit(Process_Table& table) {
         int pid = iter->first;
         kill(pid, SIGKILL);
     }
-    print_resource();
+    print_resource("exit");
 }
 
 
@@ -215,7 +219,7 @@ void shell379_jobs(Process_Table& table) {
 
     // print the table along with the resource usage
     table.print_table();
-    print_resource();
+    print_resource("jobs");
 }
 
 
